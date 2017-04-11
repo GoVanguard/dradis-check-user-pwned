@@ -17,10 +17,9 @@ class HackedEmailstoDradis(object):
         self.connectwise_company_name = "xxxxxxxxxx"
         self.connectwise_public_api_key = "xxxxxxxxxxxx"
         self.connectwise_private_api_key = "xxxxxxxxxxx"
-        self.connectwise_all_companies_site = 'https://api-na.myconnectwise.net/v4_6_release/apis/3.0/company/' \
-                                             'contacts?pageSize=1000'
-        self.connectwise_one_company_site = 'https://api-na.myconnectwise.net/v4_6_release/apis/3.0/company/' \
-                                             'contacts?conditions=company/identifier like "{0}"& pageSize=1000'
+        self.connectwise_api_site = "xxxxxxxxxxx"
+        self.connectwise_all_companies_site = self.connectwise_api_site +  '/company/contacts?pageSize=1000'
+        self.connectwise_one_company_site = self.connectwise_api_site + '/company/contacts?conditions=company/identifier like "{0}"& pageSize=1000'
         # Dradis API Configuration
         self.dradis_api_token = 'xxxxxxxxxxxxxxx'
         self.dradis_project_id = '0'

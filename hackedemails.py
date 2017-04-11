@@ -14,6 +14,7 @@ class HackedEmailstoDradis(object):
         self.session = Session()
 
         # ConnectWise API Configuration
+        self.connectwise_company_name = "xxxxxxxxxx"
         self.connectwise_public_api_key = "xxxxxxxxxxxx"
         self.connectwise_private_api_key = "xxxxxxxxxxx"
         self.connectwise_all_companies_site = 'https://api-na.myconnectwise.net/v4_6_release/apis/3.0/company/' \
@@ -49,7 +50,7 @@ class HackedEmailstoDradis(object):
                 exit(-1)
             return contacts
         elif self.arg.CompanyID_or_CSVFilename == 'all':
-            self.session.auth = ('connectwisecompanyname' + '+{0}'.format(self.connectwise_public_api_key),
+            self.session.auth = (self.connectwise_company_name  + '+{0}'.format(self.connectwise_public_api_key),
                                  self.connectwise_private_api_key)
             contacts = self.session.get(self.connectwise_all_companies_site)
             if contacts.status_code != 200:
@@ -58,7 +59,7 @@ class HackedEmailstoDradis(object):
             self.session.auth = None
             return contacts.json()
         else:
-            self.session.auth = ('connectwisecompanyname' + '+{0}'.format(self.connectwise_public_api_key),
+            self.session.auth = (self.connectwise_company_name  + '+{0}'.format(self.connectwise_public_api_key),
                                  self.connectwise_private_api_key)
             contacts = self.session.get(self.connectwise_one_company_site.format(self.arg.CompanyID_or_CSVFilename))
             if contacts.status_code != 200:

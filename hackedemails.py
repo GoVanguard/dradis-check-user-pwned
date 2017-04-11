@@ -10,6 +10,7 @@ class HackedEmailstoDradis(object):
     def __init__(self):
         self.arg = self.parse_args()
         self.emails = []
+        self.apihitcounter = 0
         self.session = Session()
 
         # ConnectWise API Configuration
@@ -68,7 +69,11 @@ class HackedEmailstoDradis(object):
 
     def csv_hacked_emails_to_dradis(self, emails):
         for email in emails:
+            if self.apihitcounter == 100:
+                    print("The hacked-emails API limit is 100. The script will now exit.")
+                    exit(-1) 
             hacked_email = self.session.get("https://hacked-emails.com/api?q={0}".format(email))
+             self.counter += 1
             if hacked_email.status_code != 200:
                 print(email + hacked_email.text)
                 continue
@@ -99,7 +104,11 @@ class HackedEmailstoDradis(object):
                         email = ci['value']
                 if email is None:
                     continue
+                if self.apihitcounter == 100:
+                    print("The hacked-emails API limit is 100. The script will now exit.")
+                    exit(-1)
                 hacked_email = self.session.get("https://hacked-emails.com/api?q={0}".format(email))
+                 self.counter += 1
                 if hacked_email.status_code != 200:
                     print(email + hacked_email.text)
                     continue

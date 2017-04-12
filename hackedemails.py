@@ -1,8 +1,7 @@
 from json import dumps
 from requests import Session
 from csv import reader
-from sys import argv
-from sys import exit
+from sys import argv, exit
 from argparse import ArgumentParser
 
 

@@ -72,7 +72,7 @@ class HackedEmailstoDradis(object):
                     print("The hacked-emails API limit is 100. The script will now exit.")
                     exit(-1) 
             hacked_email = self.session.get("https://hacked-emails.com/api?q={0}".format(email))
-            self.counter += 1
+            self.apihitcounter += 1
             if hacked_email.status_code != 200:
                 print(email + hacked_email.text)
                 continue
@@ -107,7 +107,7 @@ class HackedEmailstoDradis(object):
                     print("The hacked-emails API limit is 100. The script will now exit.")
                     exit(-1)
                 hacked_email = self.session.get("https://hacked-emails.com/api?q={0}".format(email))
-                self.counter += 1
+                self.apihitcounter += 1
                 if hacked_email.status_code != 200:
                     print(email + hacked_email.text)
                     continue

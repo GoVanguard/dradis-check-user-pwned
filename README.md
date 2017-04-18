@@ -96,11 +96,18 @@ For more  Dradis API information go to: https://dradisframework.com/pro/support/
 
 ## Usage
 
-Option        | Description
-------------- | -------------------------------------------------
-CompanyID     | ConnectWise Company ID of the contacts' emails that will be checked
-All           | All ConnectWise Company Contacts will be checked
-&#42;.csv     | Filename of .csv with emails that will be checked 
+Options           | Description
+------------------| -------------------------------------------------
+-c                | Your Company Name is ConnectWise
+-s                | Your ConnectWise API site
+-u                | ConnectWise Public API Key
+-p                | ConnectWise Private API Key
+CompanyID         | ConnectWise Company ID of the contacts' emails that will be checked
+All               | All ConnectWise Company Contacts will be checked
+&#42;.csv         | Filename of .csv with emails that will be checked 
+Dradis_URL        | Dradis URL
+Dradis_Project_ID | Dradis Project ID
+Dradis_API_Token  | Dradis API Token
 
 ### Examples
 
@@ -110,15 +117,15 @@ All           | All ConnectWise Company Contacts will be checked
 
 * To check the emails of a specific company in ConnectWise:
 
-``python hackedemails.py GVIT``
+``python hackedemails.py "-c GoVanguard -s https://connectwiseapisite.com -u 12123 -p 41424124 GVIT https://dradis-pro.dev 8 12AAA335``
 
 * To check the emails of all company contacts in ConnectWise:
 
-``python  hackedemails.py all``
+``python  hackedemails.py all "-c GoVanguard -s https://connectwiseapisite.com -u 12123 -p 41424124 https://dradis-pro.dev 8 12AAA335``
 
 * To check the emails that are in a csv file:
 
-``python hackedemails.py example.csv``
+``python hackedemails.py example.csv https://dradis-pro.dev 8 12AAA335``
 
 
 ## License

@@ -152,9 +152,12 @@ class HackedEmailstoDradis(object):
 
     def parse_args(self):
         # parse the arguments
-        parser = ArgumentParser(epilog='\tCSV Example: \r\npython ' + argv[0] + "CompanyID_or_CSVFilename " + "Dradis_URL Dradis_Project_ID Dradis_API_Token\r\n\tConnectWise Example: \r\npython "+ argv[0] + "-c GoVanguard -s https://connectwiseapisite.com -u 12123 -p 41424124",
-                                         description="Check ConnectWise Company Contacts' or csv of emails in the hacked-emails API and "
-                                                     "export the results to Dradis as issues")
+        parser = ArgumentParser(epilog='\tCSV Example: \r\npython ' + argv[0] + "CompanyID_or_CSVFilename " + 
+                                       "Dradis_URL Dradis_Project_ID Dradis_API_Token\r\n\tConnectWise Example: "
+                                       "\r\npython "+ argv[0] + "-c GoVanguard -s https://connectwiseapisite.com -u "
+                                                                "12123 -p 41424124", 
+                                description="Check ConnectWise Company Contacts' or csv of emails in the "
+                                            "hacked-emails API and export the results to Dradis as issues")
         parser._optionals.title = "OPTIONS"
         parser.add_argument('-c', dest='connectwise_company_name', help="Your Company Name is ConnectWIse", required=False)
         parser.add_argument('-s', dest='connectwise_api_site', help="Your ConnectWise API site", required=False)

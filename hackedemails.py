@@ -16,18 +16,20 @@ class HackedEmailstoDradis(object):
             if len(argv) != 13:
                 print("wrong argument amount for ConnectWise. see HELP")
                 exit(-13)
+            else:
+                # ConnectWise API Configuration
+                self.connectwise_company_name = self.arg.connectwise_company_name
+                self.connectwise_public_api_key = self.arg.public_api_key
+                self.connectwise_private_api_key = self.arg.connectwise_private_api_key
+                self.connectwise_api_site = self.arg.connectwise_api_site
+                self.connectwise_all_companies_site = self.connectwise_api_site + '/company/contacts?pageSize=1000'
+                self.connectwise_one_company_site = self.connectwise_api_site + '/company/contacts?conditions=company/' \
+                                                                                'identifier like "{0}"& pageSize=1000'
         self.emails = []
         self.apihitcounter = 0
         self.session = Session()
         self.verify_cert = True  # change this to make requests without verifying
-        # ConnectWise API Configuration
-        self.connectwise_company_name = self.arg.connectwise_company_name
-        self.connectwise_public_api_key = self.arg.public_api_key
-        self.connectwise_private_api_key = self.arg.connectwise_private_api_key
-        self.connectwise_api_site = self.arg.connectwise_api_site
-        self.connectwise_all_companies_site = self.connectwise_api_site + '/company/contacts?pageSize=1000'
-        self.connectwise_one_company_site = self.connectwise_api_site + '/company/contacts?conditions=company/' \
-                                                                        'identifier like "{0}"& pageSize=1000'
+        
         # Dradis API Configuration
         self.dradis_api_token = self.arg.dradis_api_token
         self.dradis_project_id = self.arg.dradis_project_id
@@ -165,7 +167,7 @@ class HackedEmailstoDradis(object):
         parser.add_argument('-p', dest='connectwise_private_api_key', help="ConnectWise Private API Key", required=False)
 
         parser.add_argument('CompanyID_or_CSVFilename', help="ConnectWise Company ID or CSV of emails")
-        parser.add_argument('dradis__url', help="Dradis URL")
+        parser.add_argument('dradis_url', help="Dradis URL")
         parser.add_argument('dradis_project_id', help="Dradis Project ID")
         parser.add_argument('dradis_api_token', help="Dradis API Token")
         return parser.parse_args()

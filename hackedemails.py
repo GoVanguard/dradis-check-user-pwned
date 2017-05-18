@@ -16,7 +16,7 @@ class HackedEmailstoDradis(object):
             if len(argv) != 13:
                 print("wrong argument amount for ConnectWise. see HELP")
                 exit(-13)
-            else:
+            else:  #If not a CSV file then ConnectWise will be configured
                 # ConnectWise API Configuration
                 self.connectwise_company_name = self.arg.connectwise_company_name
                 self.connectwise_public_api_key = self.arg.public_api_key
@@ -34,7 +34,7 @@ class HackedEmailstoDradis(object):
         self.dradis_api_token = self.arg.dradis_api_token
         self.dradis_project_id = self.arg.dradis_project_id
         self.dradis_url = self.arg.dradis_url
-        self.dradis_issues_url = '{0}/pro/api/issues/'.format(self.dradis_url)
+        self.dradis_issues_url = '{0}/pro/api/issues/'.format(self.dradis_url)  #https://dradis-pro.dev
 
     def run(self):
         self.emails = self.get_emails()
@@ -45,24 +45,24 @@ class HackedEmailstoDradis(object):
         return 0
 
     def get_emails(self):
-        if ".csv" in self.arg.CompanyID_or_CSVFilename:
+        if ".csv" in self.arg.CompanyID_or_CSVFilename:  #If CSV file
             contacts = []
             try:
-                with open(self.arg.CompanyID_or_CSVFilename) as csvfile:
+                with open(self.arg.CompanyID_or_CSVFilename) as csvfile:  #Reading CSV file properly
                     mycsv = reader(csvfile, delimiter=',')
                     for row in mycsv:
                         for cell in row:
                             if "@" in cell:
                                 print(cell)
-                                contacts.append(cell)
+                                contacts.append(cell)  #Storing CSV contents to list
             except Exception as e:
                 print(e)
                 exit(-1)
             return contacts
-        elif self.arg.CompanyID_or_CSVFilename == 'all':
-            self.session.auth = (self.connectwise_company_name + '+{0}'.format(self.connectwise_public_api_key),
+        elif self.arg.CompanyID_or_CSVFilename == 'all':  #If ConnectWise
+            self.session.auth = (self.connectwise_company_name + '+{0}'.format(self.connectwise_public_api_key),  #Connecting to ConnectWise
                                  self.connectwise_private_api_key)
-            contacts = self.session.get(self.connectwise_all_companies_site)
+            contacts = self.session.get(self.connectwise_all_companies_site)  #Reading ConnectWise contacts for all companies
             if contacts.status_code != 200:
                 print(self.arg.CompanyID_or_CSVFilename + ' - ' + contacts.text)
                 exit(-1)
@@ -71,25 +71,31 @@ class HackedEmailstoDradis(object):
         else:
             self.session.auth = (self.connectwise_company_name + '+{0}'.format(self.connectwise_public_api_key),
                                  self.connectwise_private_api_key)
-            contacts = self.session.get(self.connectwise_one_company_site.format(self.arg.CompanyID_or_CSVFilename))
+            contacts = self.session.get(self.connectwise_one_company_site.format(self.arg.CompanyID_or_CSVFilename))  #Reading ConnectWise contacts for specified company
             if contacts.status_code != 200:
                 print(self.arg.CompanyID_or_CSVFilename + ' - ' + contacts.text)
                 exit(-1)
             self.session.auth = None
             return contacts.json()
 
-    def csv_hacked_emails_to_dradis(self, emails):
-        for email in emails:
+    def csv_hacked_emails_to_dradis(self, emails):  #Sending compromised emails from CSV file to Dradis
+        seen = set()
+        uniqueEmails = []
+        for email in emails:  #Creating a separate list of unique emails to remove duplicates
+            if email not in seen:
+                uniqueEmails.append(email)
+                seen.add(email)
+        for email in uniqueEmails:
             if self.apihitcounter == 100:
                     print("The hacked-emails API limit is 100. The script will now exit.")
                     exit(-1)
-            hacked_email = self.session.get("https://hacked-emails.com/api?q={0}".format(email))
+            hacked_email = self.session.get("https://hacked-emails.com/api?q={0}".format(email))  #Sending emails to website to check if compromised
             self.apihitcounter += 1
             if hacked_email.status_code != 200:
                 print(email + hacked_email.text)
                 continue
             elif hacked_email.json()['status'] == "notfound":
-                print(email + 'has no entries in hackedemails.com')
+                print(email + ' has no entries in hacked-emails.com')
                 continue
             else:
                 self.session.headers.update({'Authorization': 'Token token="{0}"'.format(self.dradis_api_token)})
@@ -98,7 +104,7 @@ class HackedEmailstoDradis(object):
                 _data = ""
                 for d in hacked_email.json()['data']:
                     _data += (
-                    str(d['title']) + ' -- Date_Leaked: ' + str(d['date_leaked']) + ' -- Source_Network: ' + str(
+                    str(d['title']) + ' -- Date_Leaked: ' + str(d['date_leaked']) + ' -- Source_Network: ' + str(  #Storing results from hacked-emails.com
                         d['source_network']) + '\r\n')
                 data = {'issue': {
                         'text': '#[Title]#\r\n' + email + ' - hacked-emails.com\r\n\r\n#[Results]#\r\n' + str(
@@ -109,8 +115,9 @@ class HackedEmailstoDradis(object):
                 else:
                     print(email + ' was not imported into Dradis: ' + dradis.text)
                 self.session.headers.clear()
+        print "Completed."
 
-    def connectwise_hacked_emails_to_dradis(self, emails):
+    def connectwise_hacked_emails_to_dradis(self, emails):  #Sending compromised emails from ConnectWise contacts to Dradis
         for contact in emails:
             email = None
             if contact['communicationItems']:
@@ -122,13 +129,13 @@ class HackedEmailstoDradis(object):
                 if self.apihitcounter == 100:
                     print("The hacked-emails API limit is 100. The script will now exit.")
                     exit(-1)
-                hacked_email = self.session.get("https://hacked-emails.com/api?q={0}".format(email))
+                hacked_email = self.session.get("https://hacked-emails.com/api?q={0}".format(email))  #Sending emails to website to check if compromised
                 self.apihitcounter += 1
                 if hacked_email.status_code != 200:
                     print(email + hacked_email.text)
                     continue
                 elif hacked_email.json()['status'] == "notfound":
-                    print(email + 'has no entries in hackedemails.com')
+                    print(email + ' has no entries in hacked-emails.com')
                     continue
                 else:
                     self.session.headers.update({'Authorization': 'Token token="{0}"'.format(self.dradis_api_token)})
@@ -154,8 +161,8 @@ class HackedEmailstoDradis(object):
 
     def parse_args(self):
         # parse the arguments
-        parser = ArgumentParser(epilog='\tCSV Example: \r\npython ' + argv[0] + "CompanyID_or_CSVFilename " + 
-                                       "Dradis_URL Dradis_Project_ID Dradis_API_Token\r\n\tConnectWise Example: "
+        parser = ArgumentParser(epilog='\tCSV Example: \r\npython ' + argv[0] + " CompanyID_or_CSVFilename " +
+                                       "Dradis_URL Dradis_Project_ID Dradis_API_Token \r\nConnectWise Example: "
                                        "\r\npython "+ argv[0] + "-c GoVanguard -s https://connectwiseapisite.com -u "
                                                                 "12123 -p 41424124", 
                                 description="Check ConnectWise Company Contacts' or csv of emails in the "

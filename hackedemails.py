@@ -82,9 +82,9 @@ class HackedEmailstoDradis(object):
         seen = set()
         uniqueEmails = []
         for email in emails:  #Creating a separate list of unique emails to remove duplicates
-            if email not in seen:
-                uniqueEmails.append(email)
-                seen.add(email)
+            if email.lower() not in seen:
+                uniqueEmails.append(email.lower())
+                seen.add(email.lower())
         for email in uniqueEmails:
             if self.apihitcounter == 100:
                     print("The hacked-emails API limit is 100. The script will now exit.")
@@ -115,7 +115,7 @@ class HackedEmailstoDradis(object):
                 else:
                     print(email + ' was not imported into Dradis: ' + dradis.text)
                 self.session.headers.clear()
-        print "Completed."
+        print("Completed.")
 
     def connectwise_hacked_emails_to_dradis(self, emails):  #Sending compromised emails from ConnectWise contacts to Dradis
         for contact in emails:

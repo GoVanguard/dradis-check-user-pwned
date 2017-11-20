@@ -79,6 +79,8 @@ class HackedEmailstoDradis(object):
             return contacts.json()
 
     def csv_hacked_emails_to_dradis(self, emails):  #Sending compromised emails from CSV file to Dradis
+        karp = []
+        _data = ''
         seen = set()
         uniqueEmails = []
         for email in emails:  #Creating a separate list of unique emails to remove duplicates
@@ -98,23 +100,25 @@ class HackedEmailstoDradis(object):
                 print(email + ' has no entries in hacked-emails.com')
                 continue
             else:
+                _data = '\r\n\r\n' + email + '\r\n'
                 self.session.headers.update({'Authorization': 'Token token="{0}"'.format(self.dradis_api_token)})
                 self.session.headers.update({'Dradis-Project-Id': self.dradis_project_id})
                 self.session.headers.update({'Content-type': 'application/json'})
-                _data = ""
                 for d in hacked_email.json()['data']:
                     _data += (
                     str(d['title']) + ' -- Date_Leaked: ' + str(d['date_leaked']) + ' -- Source_Network: ' + str(  #Storing results from hacked-emails.com
-                        d['source_network']) + '\r\n')
-                data = {'issue': {
-                        'text': '#[Title]#\r\n' + email + ' - hacked-emails.com\r\n\r\n#[Results]#\r\n' + str(
-                            hacked_email.json()['results']) + "\r\n\r\n" + _data + "\r\n\r\n"}}
-                dradis = self.session.post(self.dradis_issues_url, data=dumps(data), verify=self.verify_cert)
-                if dradis.status_code == 201:
-                    print(email + ' was imported into Dradis')
-                else:
-                    print(email + ' was not imported into Dradis: ' + dradis.text)
-                self.session.headers.clear()
+                        d['source_network']) + ' --Source_URL: ' + str(d['source_url']) + '\r\n')
+                    karp.append(str(_data))
+        thing = ''.join(karp)
+        print(thing)
+        issue = {'issue': {'text': '#[Title]#\r\n Compromised Company Emails\r\n\r\n #[Results]#\r\n' + thing}}
+        #print(issue)
+        '''dradis = self.session.post(self.dradis_issues_url, data=dumps(issue), verify=self.verify_cert)
+        if dradis.status_code == 201:
+            print('All compromised emails were imported into Dradis')
+        else:
+            print('Emails were not imported into Dradis: ' + dradis.text)'''
+        self.session.headers.clear()
         print("Completed.")
 
     def connectwise_hacked_emails_to_dradis(self, emails):  #Sending compromised emails from ConnectWise contacts to Dradis

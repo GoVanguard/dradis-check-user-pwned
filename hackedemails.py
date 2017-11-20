@@ -110,14 +110,14 @@ class HackedEmailstoDradis(object):
                         d['source_network']) + ' --Source_URL: ' + str(d['source_url']) + '\r\n')
                     karp.append(str(_data))
         thing = ''.join(karp)
-        print(thing)
+        #print(thing)
         issue = {'issue': {'text': '#[Title]#\r\n Compromised Company Emails\r\n\r\n #[Results]#\r\n' + thing}}
         #print(issue)
-        '''dradis = self.session.post(self.dradis_issues_url, data=dumps(issue), verify=self.verify_cert)
+        dradis = self.session.post(self.dradis_issues_url, data=dumps(issue), verify=self.verify_cert)
         if dradis.status_code == 201:
             print('All compromised emails were imported into Dradis')
         else:
-            print('Emails were not imported into Dradis: ' + dradis.text)'''
+            print('Emails were not imported into Dradis: ' + dradis.text)
         self.session.headers.clear()
         print("Completed.")
 

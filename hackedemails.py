@@ -111,7 +111,7 @@ class HackedEmailstoDradis(object):
                     karp.append(str(_data))
         thing = ''.join(karp)
         #print(thing)
-        issue = {'issue': {'text': '#[Title]#\r\n Compromised Company Emails\r\n\r\n #[Results]#\r\n' + thing}}
+        issue = {'issue': {'text': '#[Title]#\r\n Compromised Company Emails\r\n\r\n#[Results]#\r\n' + thing}}
         #print(issue)
         dradis = self.session.post(self.dradis_issues_url, data=dumps(issue), verify=self.verify_cert)
         if dradis.status_code == 201:

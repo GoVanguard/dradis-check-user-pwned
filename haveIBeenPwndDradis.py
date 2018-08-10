@@ -66,7 +66,7 @@ class HaveIBeenPwndDradis(object):
         parser.add_argument('dradis_url', help="Dradis URL")
         parser.add_argument('dradis_project_id', help="Dradis Project ID")
         parser.add_argument('dradis_api_token', help="Dradis API token")
-        return parser.parseArgs()
+        return parser.parse_args()
 
 if __name__ == "__main__":
     scriptInstance = HaveIBeenPwndDradis()

@@ -1,6 +1,6 @@
 
 ## About check-user-pwned-dradis
-check-user-pwned-dradis is a python tool that searches a list of emails across multiple data breaches to see if it has been compromised and then imports findings into Dradis as issues. It checks emails from your contacts in ConnectWise or a csv. 
+check-user-pwned-dradis is a python tool that searches a CSV of emails across multiple data breaches to see if it has been compromised and then imports findings into Dradis as issues. 
 
 ## Installation
 
@@ -16,44 +16,38 @@ check-user-pwned-dradis currently supports **Python 3**.
 
 ## Dependencies:
 
-check-user-pwned-dradis depends on the `requests`, `csv` and `argparse` python modules.
+check-user-pwned-dradis depends on the `PyDradis3`, `pypwned`, `csv` and `argparse` python modules.
 
 Each module can be installed independently as shown below.
 
-#### Requests Module (http://docs.python-requests.org/en/latest/)
+#### PyDradis3 Python library
 
 - Install for Windows:
 ```
-c:\python27\python.exe -m pip install requests
+c:\python27\python.exe -m pip install pydradis3
 ```
-
-- Install for Ubuntu/Debian:
-```
-sudo apt-get install python-requests
-```
-
-- Install for Centos/Redhat:
-```
-sudo yum install python-requests
-```
-
 - Install using pip on Linux:
 ```
-sudo pip install requests
+sudo pip install pydradis3
 ```
 
-#### csv Module 
+#### pypwned Python library
+
+- Install for Windows:
+```
+c:\python27\python.exe -m pip install pypwned
+```
+- Install using pip on Linux:
+```
+sudo pip install pypwned
+```
+
+#### csv Python library
 
 - Install for Windows:
 ```
 c:\python27\python.exe -m pip install csv
 ```
-
-- Install for Ubuntu/Debian:
-```
-sudo apt-get install csv  
-```
-
 - Install using pip:
 ```
 sudo pip install csv
@@ -61,76 +55,20 @@ sudo pip install csv
 
 #### argparse Module
 
-- Install for Ubuntu/Debian:
+- Install for Windows:
 ```
-sudo apt-get install python-argparse
+c:\python27\python.exe -m pip install argparse
 ```
-
-- Install for Centos/Redhat:
-```
-sudo yum install python-argparse
-``` 
-
 - Install using pip:
 ```
 sudo pip install argparse
 ```
 
-## Script Configuration
-
-#### Connectwise API
-For ConnectWise you will need to edit the following variables: self.connectwise_company_name, self.connectwise_public_api_key,        self.connectwise_private_api_key, self.connectwise_api_site.
-self.connectwise_company_name is the name of your company in ConnectWise.
-self.connectwise_public_api_key and self.connectwise_private_api_key can be found in one of your ConnectWise member accounts.
-self.connectwise_api_site is your ConnectWise url with several modifications.
-For more ConnectWise API information go to: https://developer.connectwise.com
-
-
-#### Dradis API
-For Dradis you need to edit the following variables: self.dradis_api_token, self.dradis_project_id, self.dradis_issues_url
-self.dradis_issues_url should be the url of your Dradis server with '/pro/api/issues' added on the end. 
-self.dradis_project_id is the project id of the project that you will import issues into. You can find this number when you click on     your project
-self.dradis_api_token can be found by going to your dradis server's account settings which is your url with'pro/profile' added on.
-For more  Dradis API information go to: https://dradisframework.com/pro/support/guides/rest_api/
-
-
-## Usage
-
-Options           | Description
-------------------| -------------------------------------------------
--c                | Your Company Name is ConnectWise
--s                | Your ConnectWise API site
--u                | ConnectWise Public API Key
--p                | ConnectWise Private API Key
-CompanyID         | ConnectWise Company ID of the contacts' emails that will be checked
-All               | All ConnectWise Company Contacts will be checked
-&#42;.csv         | Filename of .csv with emails that will be checked 
-Dradis_URL        | Dradis URL
-Dradis_Project_ID | Dradis Project ID
-Dradis_API_Token  | Dradis API Token
-
 ### Examples
 
-* To see the usage syntax use -h switch:
-
-```python hackedemails.py -h```
-
-* To check the emails of a specific company in ConnectWise:
-
-``python hackedemails.py "-c GoVanguard -s https://connectwiseapisite.com -u 12123 -p 41424124 GVIT https://dradis-pro.dev 8 12AAA335``
-
-* To check the emails of all company contacts in ConnectWise:
-
-``python  hackedemails.py all "-c GoVanguard -s https://connectwiseapisite.com -u 12123 -p 41424124 https://dradis-pro.dev 8 12AAA335``
-
-* To check the emails that are in a csv file:
-
-``python hackedemails.py example.csv https://dradis-pro.dev 8 12AAA335``
+* To see the usage syntax and examples use HELP switch
 
 
 ## License
 
 check-user-pwned-dradis is licensed under the GNU Affero General Public License v3.0. Take a look at the [LICENSE](https://github.com/GoVanguard/check-user-pwned-dradis/blob/master/LICENSE) for more information.
-
-## Version
-**Current version is 1.0**

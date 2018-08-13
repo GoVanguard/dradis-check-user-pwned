@@ -26,8 +26,8 @@ class HaveIBeenPwndDradis(object):
                 csvObj = csv.reader(csvfile, delimiter=',')
                 #self.createIssues(csvObj)
                 for csvRow in csvObj:
-                    userEmail = csvRow[0]
-                    self.performQuery(userEmail, self.dradisProjectId)
+                    userEmailOrDomain = csvRow[0]
+                    self.performQuery(userEmailOrDomain, self.dradisProjectId)
                     #print(csvRow[0]) 
         except Exception as e:
             print(e)
@@ -36,34 +36,39 @@ class HaveIBeenPwndDradis(object):
         print("Finished.")
         return
 
-    def searchApi(self, user: str):
-        print("Performing breach query for {0}. Be patient, this can take 4 to 20 seconds.".format(user))
-        breachList = self.querySession.getAccountBreaches(user)
+    def searchApi(self, query: str):
+        print("Performing breach query for {0}. Be patient, this can take 4 to 20 seconds.".format(query))
+        if "@" in query:
+            breachList = self.querySession.getAccountBreaches(query)
+            print("Performing paste query for {0}. Be patient, this can take 4 to 20 seconds.".format(query))
+            pasteList = self.querySession.getAccountPastes(query)
+            if type(pasteList) == type(str()):
+                print(pasteList)
+                pasteList = []
+        else:
+            breachList = self.querySession.getDomainBreaches(query)
+            pasteList = []
         if type(breachList) == type(str()):
             print(breachList)
             breachList = []
-        print("Performing paste query for {0}. Be patient, this can take 4 to 20 seconds.".format(user))
-        pasteList = self.querySession.getAccountPastes(user)
-        if type(pasteList) == type(str()):
-            print(pasteList)
             pasteList = []
         searchResults = breachList + pasteList
         return searchResults
 
-    def performQuery(self, userEmail: str, projectId: str):
-        pwndResults = self.searchApi(userEmail)
+    def performQuery(self, userEmailOrDomain: str, projectId: str):
+        pwndResults = self.searchApi(userEmailOrDomain)
         if pwndResults:
-            nodeId = self.createNode(userEmail, projectId)
+            nodeId = self.createNode(userEmailOrDomain, projectId)
             if nodeId:
-                print("Node {0} for {1} found on projectId {2}".format(nodeId, userEmail, projectId))
-                issueId = self.createIssue(userEmail, projectId, nodeId)
+                print("Node {0} for {1} found on projectId {2}".format(nodeId, userEmailOrDomain, projectId))
+                issueId = self.createIssue(userEmailOrDomain, projectId, nodeId)
                 if issueId:
                     print("Issue {0} for {1} created on projectId {2}".format(issueId, nodeId, projectId))
                     for pwndResult in pwndResults:
                         if pwndResult.get('Source'):
-                            text = '#[Title]#\r\n' + userEmail + '_paste\r\n\r\n'
+                            text = '#[Title]#\r\n' + userEmailOrDomain + '_paste\r\n\r\n'
                         else:
-                            text = '#[Title]#\r\n' + userEmail + '_breach\r\n\r\n'
+                            text = '#[Title]#\r\n' + userEmailOrDomain + '_breach\r\n\r\n'
                         for resultKey in pwndResult:
                             text += '#[{0}]#\r\n'.format(resultKey) + '{0}\r\n'.format(pwndResult[resultKey]) + '\r\n\r\n'
                         evidenceId = self.createEvidence(nodeId, projectId, issueId, text)
@@ -74,17 +79,17 @@ class HaveIBeenPwndDradis(object):
                 else:
                     print("Issue creation for {0} failed on projectId {1}".format(nodeId, projectId))
             else:
-                print("Node creation for {0} failed on projectId {1}".format(userEmail, projectId))
+                print("Node creation for {0} failed on projectId {1}".format(userEmailOrDomain, projectId))
         else:
-            print("No breach results for {0}".format(userEmail))
+            print("No breach results for {0}".format(userEmailOrDomain))
         
         return
 
-    def createIssue(self, userEmail, projectId, nodeId):
+    def createIssue(self, userEmailOrDomain, projectId, nodeId):
         # Call create_issue_raw from pydradis3 which accepts a manually constructed payload as data
-        issueTitle = "Email address {0} (node id {1}) found in one or more breaches, databases or pastebins".format(userEmail, nodeId)
+        issueTitle = "{0} (node id {1}) found in one or more breaches, databases or pastebins".format(userEmailOrDomain, nodeId)
         issueText = issueTitle + "\n Please review evidence for information on each instance."
-        issueTags = ["##{0}##".format(nodeId), "##{0}##".format(userEmail)]
+        issueTags = ["##{0}##".format(nodeId), "##{0}##".format(userEmailOrDomain)]
         createIssue = self.dradisSession.create_issue(projectId, issueTitle, issueText, issueTags)
         return createIssue
 

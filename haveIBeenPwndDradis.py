@@ -1,5 +1,5 @@
 from pydradis3 import Pydradis3
-import pypwned
+from pyHaveIBeenPwned import pyHaveIBeenPwned
 from json import dumps
 import csv
 from sys import argv, exit, version
@@ -18,6 +18,7 @@ class HaveIBeenPwndDradis(object):
         self.dradisUrl = self.arg.dradisUrl
         self.dradisDebug = False
         self.dradisSession = Pydradis3(self.dradisApiToken, self.dradisUrl, self.dradisDebug, self.verifyCert)
+        self.querySession = pyHaveIBeenPwned()
 
     def run(self):
         try:
@@ -36,9 +37,17 @@ class HaveIBeenPwndDradis(object):
         return
 
     def searchApi(self, user: str):
-        searchResults = pypwned.getAllBreachesForAccount(email=user)
-        if str(searchResults) == "A server error occurred on haveibeenpwned.com. Please try again later.":
-            searchResults = []
+        print("Performing breach query for {0}. Be patient, this can take 4 to 20 seconds.".format(user))
+        breachList = self.querySession.getAccountBreaches(user)
+        if type(breachList) == type(str()):
+            print(breachList)
+            breachList = []
+        print("Performing paste query for {0}. Be patient, this can take 4 to 20 seconds.".format(user))
+        pasteList = self.querySession.getAccountPastes(user)
+        if type(pasteList) == type(str()):
+            print(pasteList)
+            pasteList = []
+        searchResults = breachList + pasteList
         return searchResults
 
     def performQuery(self, userEmail: str, projectId: str):
@@ -50,10 +59,13 @@ class HaveIBeenPwndDradis(object):
                 issueId = self.createIssue(userEmail, projectId, nodeId)
                 if issueId:
                     print("Issue {0} for {1} created on projectId {2}".format(issueId, nodeId, projectId))
-                    print(pwndResults)
                     for pwndResult in pwndResults:
-                        text = '#[Title]#\r\n' + userEmail + '_breach\r\n\r\n'
-                        text += '#[{0}]#\r\n'.format(pwndResult) + '{0}\r\n'.format(pwndResults[pwndResult]) + '\r\n\r\n'
+                        if pwndResult.get('Source'):
+                            text = '#[Title]#\r\n' + userEmail + '_paste\r\n\r\n'
+                        else:
+                            text = '#[Title]#\r\n' + userEmail + '_breach\r\n\r\n'
+                        for resultKey in pwndResult:
+                            text += '#[{0}]#\r\n'.format(resultKey) + '{0}\r\n'.format(pwndResult[resultKey]) + '\r\n\r\n'
                         evidenceId = self.createEvidence(nodeId, projectId, issueId, text)
                         if evidenceId:
                             print("Evidence {0} for {1} created on projectId {2}".format(evidenceId, issueId, projectId))

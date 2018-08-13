@@ -16,7 +16,7 @@ check-user-pwned-dradis currently supports **Python 3**.
 
 ## Dependencies:
 
-check-user-pwned-dradis depends on the `PyDradis3`, `pypwned`, `csv` and `argparse` python modules.
+check-user-pwned-dradis depends on the `PyDradis3`, `pyHaveIBeenPwned`, `csv` and `argparse` python modules.
 
 Each module can be installed independently as shown below.
 
@@ -31,15 +31,15 @@ c:\python27\python.exe -m pip install pydradis3
 sudo pip install pydradis3
 ```
 
-#### pypwned Python library
+#### pyHaveIBeenPwned Python library
 
 - Install for Windows:
 ```
-c:\python27\python.exe -m pip install pypwned
+c:\python27\python.exe -m pip install pyHaveIBeenPwned
 ```
 - Install using pip on Linux:
 ```
-sudo pip install pypwned
+sudo pip install pyHaveIBeenPwned
 ```
 
 #### csv Python library

@@ -90,7 +90,7 @@ class HaveIBeenPwndDradis(object):
         issueTitle = "{0} (node id {1}) found in one or more breaches, databases or pastebins".format(userEmailOrDomain, nodeId)
         issueText = issueTitle + "\n Please review evidence for information on each instance."
         issueTags = ["##{0}##".format(nodeId), "##{0}##".format(userEmailOrDomain)]
-        createIssue = self.dradisSession.create_issue(projectId, issueTitle, issueText, issueTags)
+        createIssue = self.dradisSession.create_issue(projectId, issueTitle, issueText)
         return createIssue
 
     def createNode(self, nodeName: str, projectId: int):

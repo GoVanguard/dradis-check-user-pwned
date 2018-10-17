@@ -1,5 +1,5 @@
 
-# check-user-pwned-dradis
+# dradis-check-user-pwned
 check-user-pwned-dradis is a python tool that searches a CSV of emails across multiple data breaches to see if it has been compromised and then imports findings into Dradis as issues. 
 
 ## Installation

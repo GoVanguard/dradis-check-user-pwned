@@ -5,7 +5,7 @@ check-user-pwned-dradis is a python tool that searches a CSV of emails across mu
 ## Installation
 
 ```
-git clone https://github.com/GoVanguard/check-user-pwned-dradis.git
+git clone https://github.com/GoVanguard/dradis-check-user-pwned.git
 ```
 
 ## Recommended Python Version:

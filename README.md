@@ -1,5 +1,11 @@
 
-# dradis-check-user-pwned
+Dradis-Check-User-Pwned
+==
+[![Build Status](https://travis-ci.com/GoVanguard/dradis-check-user-pwned.svg?branch=master)](https://travis-ci.com/GoVanguard/dradis-check-user-pwned)
+[![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/dradis-check-user-pwned/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/GoVanguard/dradis-check-user-pwned?targetFile=requirements.txt)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c3d8fe85358d06144a19/maintainability)](https://codeclimate.com/github/GoVanguard/dradis-check-user-pwned/maintainability)
+
+# About dradis-check-user-pwned
 check-user-pwned-dradis is a python tool that searches a CSV of emails across multiple data breaches to see if it has been compromised and then imports findings into Dradis as issues. 
 
 ## Installation
